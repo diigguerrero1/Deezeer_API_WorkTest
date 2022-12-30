@@ -5,47 +5,102 @@ from django.shortcuts import render
 
 from .tools import remover_duplicados
 
+from .models import Artist, Album, Song
+
+
+# ETL DATA ARTISTAS
 
 def limpieza_data_artistas():
 
-    headers_documents = os.listdir('./Deezer/static')
+    headers_documents = list(os.listdir('./Deezer/static'))
     counter = len(headers_documents)
 
-   # for i in range(counter):
+    # Usaaremos estos diccionarios para darle estructura a la información
 
-    with open(f'Deezer/static/{headers_documents[0]}', 'r') as file:
-        document = json.load(file)
+    nombres = {}
+    pictures = {}
+    types = {}
 
-        num_obj_list_data = (len(document['data']))
+    # Usaremos estas listas para entregar la información final.
 
-        ids = {}
-        nombres = {}
-        pictures = {}
-        types = {}
+    names_list = []
+    pictures_list = []
+    types_list = []
 
-        for i in range(num_obj_list_data):
+    for num in range(0, counter):
 
-            name_artist = document['data'][i]['artist']['name']
-            nombres[i] = name_artist
+        # Aqui se abren los archivos JSON con la info:
 
-            picture_artist = document['data'][i]['artist']['picture']
-            pictures[i] = picture_artist
-            
-            type_artist = document['data'][i]['artist']['type']
-            types[i] = type_artist
+        with open(f'Deezer/static/{headers_documents[num]}', 'r') as file:
+            document = json.load(file)
 
-        id = remover_duplicados(ids)
-        names = remover_duplicados(nombres)
-        pictures = remover_duplicados(pictures)
-        type = remover_duplicados(types)
+            num_obj_list_data = (len(document['data']))
+
+            # Generaremos un bucle para ingresar datos al diccionario
         
-        artist_id_list = list(id.values())
-        artist_names_list = list(names.values())
-        artist_pictures_list = list(pictures.values())
-        artist_types_list = list(type.values())
+            for i in range(num_obj_list_data):
 
-    return artist_id_list, artist_names_list, artist_pictures_list, artist_types_list
+                name_artist = document['data'][i]['artist']['name']
+                nombres[i] = name_artist
 
+                picture_artist = document['data'][i]['artist']['picture']
+                pictures[i] = picture_artist
+                
+                type_artist = document['data'][i]['artist']['type']
+                types[i] = type_artist
+
+            # Acá limpiamos los datos repetidos con una función exportada
+        
+            names = remover_duplicados(nombres)
+            pictures = remover_duplicados(pictures)
+            type = remover_duplicados(types)
+            
+            # Acá se agregan los nombres a una lista
+        
+            artist_names_list = list(names.values())
+            artist_pictures_list = list(pictures.values())
+            artist_types_list = list(type.values())
+
+            # Acá se agrega cadaa lista x archivo a una lista superior que entrega la info.
+        
+            names_list.append(artist_names_list)
+            pictures_list.append(artist_pictures_list)
+            types_list.append(artist_types_list)
+            
+
+    return names_list, pictures_list, types_list
+
+
+
+def load_data_artists():
+    
+    names, pics, types = limpieza_data_artistas()
+
+    tamaño_list_principal = len(names)
+
+    for i in range(tamaño_list_principal):
+        list_names = names[i]
+        list_pics = pics[i]
+        list_types = types[i]
+
+        print(list_types)
+        
+        for j in range(len(list_pics)):
+
+            artist = Artist()
+
+            artist.name = list_names[j]
+            artist.picture = list_pics[j]
+            artist.type = str(list_types[0])
+
+            artist.save()
+           
+        print('Se han cargado los datos')
+    
+            
+            
+
+# ETL DATA ALBUMS
 
 
 def limpieza_data_albums():
@@ -53,16 +108,17 @@ def limpieza_data_albums():
     headers_documents = os.listdir('./Deezer/static')
     counter = len(headers_documents)
 
+    titles = {}
+    tracklist = {}
+    types = {}
+
+
    # for i in range(counter):
 
     with open(f'Deezer/static/{headers_documents[0]}', 'r') as file:
         document = json.load(file)
 
         num_obj_list_data = (len(document['data']))
-
-        titles = {}
-        tracklist = {}
-        types = {}
 
         for i in range(num_obj_list_data):
 
@@ -87,10 +143,10 @@ def limpieza_data_albums():
         types = []
 
         for i in range(len(albums_titles_list)):
-            type = album_types_list[0]
+            type = album_types_list[i]
             types.append(type)
 
-        return print(albums_titles_list, album_tracklist_list, types)
+        return albums_titles_list, album_tracklist_list, types
         
 
 
@@ -131,12 +187,8 @@ def limpieza_data_songs():
             type_song = document['data'][i]['type']
             types[i] = type_song
 
-        print(titles, artist, album, link, duration, types)
+        return titles, artist, album, link, duration, types
 
-
-
-def load_data(data):
-    pass
 
 
 
