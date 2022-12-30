@@ -32,6 +32,8 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     "Deezer.apps.DeezerConfig",
+
+    "rest_framework",
     
     'django.contrib.admin',
     'django.contrib.auth',

@@ -112,6 +112,10 @@ def limpieza_data_albums():
     tracklist = {}
     types = {}
 
+    titles_list = []
+    tracklist_list = []
+    types_list = []
+
 
    # for i in range(counter):
 
@@ -136,18 +140,11 @@ def limpieza_data_albums():
         tracklist = remover_duplicados(tracklist)
         type = remover_duplicados(types)
 
-        albums_titles_list = list(titles.values())
+        album_titles_list = list(titles.values())
         album_tracklist_list = list(tracklist.values())
         album_types_list = list(type.values())
 
-        types = []
-
-        for i in range(len(albums_titles_list)):
-            type = album_types_list[i]
-            types.append(type)
-
-        return albums_titles_list, album_tracklist_list, types
-        
+        print(len(album_titles_list), len(album_tracklist_list), len(album_types_list))       
 
 
 def limpieza_data_songs():
