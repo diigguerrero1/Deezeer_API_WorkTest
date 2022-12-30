@@ -1,42 +1,27 @@
-
-
 import requests
 
 
-def json_de_albums():
-    for i in range(302027,302128):
-        response = requests.get(f'https://api.deezer.com/album/{i}')
+
+def json_bajar_data():
+
+    nombres = ['eminem', 'daftpunk', 'queen', 'vicentefernandez', 'jbalvin', 'adam_beyer', 'snoopdogg', 'gorillaz', 'phoenix', 'therollingstones', 'jenniferlopez', 'Eric Prydz', 'crazyfrog', 'barrywhite', 'christinemilton', 'thebeatles', 'manuchao', 'carlcox', 'benklock', 'trym', 'ihatemodels', 'miranda', 'kobosil', 'rivastarr','radioslave','nointellectualproperty','theprodigy','hooligans','marcanghony','seanpaul','christinavidal','50cent','fatboyslim','thechemicalbrothers', 'ladygaga']
+
+    conteo = len(nombres)
+
+    for i in range(conteo):
+        response = requests.get(f'https://api.deezer.com/search?q={nombres[i]}')
 
         contenido = response.content
 
         contenido = contenido.decode()
 
-        file = open(f'Archivo_{i}.json', "w")   
-        file.write(contenido)
-        file.close()
-
-
-
-def json_de_canciones():
-    for i in range(0,50):
-        response = requests.get(f'https://api.deezer.com/artist/{i}')
-
-        contenido = response.content
-
-        contenido = contenido.decode()
-
-        file = open(f'DATA canciones/Archivo_{i}.json', "w")   
-        file.write(contenido)
-        file.close()
-
-        file_filter = open(f'DATA canciones/Archivo_{i}.json', "r")
-        if file_filter["error"]:
-
-            
-            
-
+        with open(f'Archivo_{nombres[i]}.json', "w") as file:  
+            file.write(contenido)
+            print(file)
 
 
 
 if __name__ == "__main__":
-   json_de_canciones()
+
+    json_bajar_data()
+

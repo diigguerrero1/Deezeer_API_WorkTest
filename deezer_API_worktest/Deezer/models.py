@@ -26,7 +26,6 @@ class Album(models.Model):
     picture = models.CharField(max_length=300)
     artist = models.ForeignKey(Artist, on_delete=models.CASCADE)
     status = models.BooleanField('Activo/No Activo', default=True)
-    duration = models.IntegerField("duración del album")
     tracklist = models.CharField("URL del tracklist", max_length=300)
     type = models.CharField(max_length=50)
 
